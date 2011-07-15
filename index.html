@@ -96,6 +96,7 @@
 		
 		function populateEvent() {
 			if(mCurrentEvent){
+				$('#eventDetails').empty();
 				var tCurrentEvent = $.parseJSON(mCurrentEvent);
 				$('<h3>').text(tCurrentEvent.title).appendTo('#eventDetails');
 				$('<p>').text(tCurrentEvent.description).appendTo('#eventDetails');
