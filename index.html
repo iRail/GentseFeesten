@@ -38,6 +38,7 @@
 		
 		var mRadius = 2
 		
+		var mCurrentEvent
 		
 		//
 		// Auxiliary
@@ -79,7 +80,11 @@
 							$('#start', tEventItem).text(tEvent.schedule.start);
 							$('.location .description', tEventItem).text(tEvent.location.description)
 							$('.location .distance', tEventItem).text(readableDistance(1000*tEvent.location.distance) + " van hier")
-							$('a', tEventItem).attr('href', '#event');				
+							$('a', tEventItem).attr('href', '#event');
+							$('a', tEventItem).click( function() {
+								mCurrentEvent = JSON.stringify(tEvent);
+								populateEvent();
+							});
 							tEventItem.appendTo($('#events'));
 						});
 					}
@@ -87,6 +92,19 @@
 				$('#listDivider').remove();
 				$('#item').remove();
 				$('#events').attr("style", "")
+			}
+		}
+		
+		function populateEvent() {
+			if(mCurrentEvent){
+				$('#eventDetails').empty();
+				var tCurrentEvent = $.parseJSON(mCurrentEvent);
+				$('<h3>').text(tCurrentEvent.title).appendTo('#eventDetails');
+				$('<p>').text(tCurrentEvent.description).appendTo('#eventDetails');
+				$('<h4>').text('Locatie').appendTo('#eventDetails');
+				$('<p>').text(tCurrentEvent.location.description).appendTo('#eventDetails');
+				$('<h4>').text('Tijdstip').appendTo('#eventDetails');
+				$('<p>').text('Van ' + tCurrentEvent.schedule.start + ' tot ' + tCurrentEvent.schedule.stop + '.').appendTo('#eventDetails');
 			}
 		}
 		
@@ -198,17 +216,17 @@
 			</div>
 
 			<div data-role="footer">
-			  <h4>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h4>
+			  <h5>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h5>
 			</div>
 		</div>
 
 		<div id="event" data-role="page">
 
 			<div data-role="header">
-				<h1></h1>				
+				<a href='#' class='ui-btn-left' data-icon='arrow-l' onclick="history.back(); return false">Back</a><h1>Details</h1>			
 			</div>
 
-			<div data-role="content">
+			<div id="eventDetails" data-role="content">
 			</div>
 
 			<div data-role="footer">
