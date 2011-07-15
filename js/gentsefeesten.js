@@ -110,7 +110,9 @@ var GentseFeesten = new function() {
 			return (event.location.distance <= radius);
 		});
 		data.sort(function(a, b) {
-			return (a.location.distance - b.location.distance);
+			var mina = a.schedule.start.substr(0, 2)*60 + a.schedule.start.substr(2, 2)
+			var minb = b.schedule.start.substr(0, 2)*60 + b.schedule.start.substr(2, 2)
+			return (mina - minb);
 		});
 	
 		// Filter on hour

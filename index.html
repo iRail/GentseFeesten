@@ -35,7 +35,7 @@
 		var mHasEvents
 		var mEvents
 		
-		var mRadius = 2000
+		var mRadius = 2
 		
 		
 		//
@@ -53,15 +53,17 @@
 				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
 					var tPartitionItem = $('#listDivider').clone();
 					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-					tPartitionItem.text(tPartitionIndex+date.getHours()-1).appendTo($('#events'));
+					$(".title", tPartitionItem).text(tPartitionIndex+date.getHours()-1);
+					$(".counter", tPartitionItem).text(tPartition.length);
+					tPartitionItem.appendTo($('#events'));
 					
 					$.each(tPartition, function (tEventIndex, tEvent) {
 						var tEventItem = $('#item').clone();
 						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
-						$('#title', tEventItem).text(tEvent.title);
-						$('#distance', tEventItem).text(tEvent.location.distance);
-						$('#location', tEventItem).text(tEvent.location.description);	
-						$('a', tEventItem).attr('href', '#page');							
+						$('#title', item).text(tEvent.title);
+						$('#start', item).text(tEvent.schedule.start);
+						$('#location', item).text(tEvent.location.description);	
+						$('a', tEventItem).attr('href', '#page');				
 						tEventItem.appendTo($('#events'));
 					});
 				});
@@ -84,7 +86,7 @@
 		}
 		
 		function onLocationFailure(error) {
-			alert(error);
+			$('#location_status').text("(kvind u ni, zeg het mij es)");
 		}
 		
 		
@@ -108,14 +110,29 @@
 			// Load the data when a page is about to be shown
 			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) {
 				// Request the current location
-				//GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
-				mHasLocation = true
-				mLatitude = 51
-				mLongitude = 3
+				GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
 				
 				// Request a list of events
 				var date = new Date();
 				GentseFeesten.getEvents(date.getDate() - 15 + 1, onEventsSuccess, onEventsFailure);	// FIXME: +1 for development purposes
+			});
+			// Catch an address specification
+			var t = $('#location_address');
+			$('#location_address').keypress(function(iEvent) {
+				if (iEvent.which == 13) {
+					GentseFeesten.getLocationByAddress(
+						$('#location_address').val(),
+						function(iLatitude, iLongitude, iFormattedAddress) {
+							mHasLocation = true
+							mLatitude = iLatitude
+							mLongitude = iLongitude
+							$('#location_status').text("(" + iFormattedAddress + ")");
+							populateList()
+						}, function(iError) {
+							$('#location_status').text("(ksnap der niks van, probeert nog es)");
+						}
+					);
+				}
 			});
 		});
 		</script>
@@ -130,16 +147,23 @@
 			</div>
 
 			<div id="divContent" data-role="content">
+				<div data-role="collapsible" data-collapsed="true">
+					<h3 id="locationheader">Locatie <i id="location_status">(aant zoeken...)</i></h3>
+					<div data-role="fieldcontain">
+						<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
+					</div>
+				</div>
 				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b">
 					<li id="listDivider" class="ui-li ui-li-divider ui-btn ui-bar-b ui-btn-up-undefined" role="heading" data-role="list-divider">
-						<span id="count" class="ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
+						<span class="title"></span>
+						<span class="counter ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
 					</li>
 					<li id="item" class="ui-btn-corner-none ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
 						<div class="ui-btn-inner ui-li">
 							<div class="ui-btn-text">
 								<a class="ui-link-inherit" href="">
 								<p class="ui-li-aside ui-li-desc">
-									<strong id="distance"></strong>
+									<strong id="start"></strong>
 								</p>
 
 								<h3 id="title"></h3>
