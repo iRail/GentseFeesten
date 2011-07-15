@@ -113,46 +113,43 @@
 		//
 		
 		$('document').ready(function() {
-			// Load the data when a page is about to be shown
-			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) {
-				// Request the current location
-				GentseFeesten.getLocation(
-					function onLocationSuccess(iLatitude, iLongitude, iAccuracy) {
-						mLatitude = iLatitude
-						mLongitude = iLongitude
-						mHasLocation = true
-						
-						$('#location_status').text("(kem u gevonden)");
-						GentseFeesten.getAddressByLocation(
-							mLatitude,
-							mLongitude,
-							function(iAddress) {
-								$('#location_status').text("(" + iAddress + ")");
-							},
-							function(iError) {
-								$('#location_status').text("(kem u gevonden, ma kweet ni waar)");
-							}
-						);
-			
-						populateList();
-					},
-					function (error) {
-						$('#location_status').text("(kvind u ni, zeg het mij es)");
-				});
-				
-				// Request a list of events
-				var date = new Date();
-				GentseFeesten.getEvents(
-					date.getDate() - 15 + 1,	// FIXME: +1 for development purposes
-					function(iEvents) {
-						mEvents = iEvents
-						mHasEvents = true
+			// Request the current location
+			GentseFeesten.getLocation(
+				function onLocationSuccess(iLatitude, iLongitude, iAccuracy) {
+					mLatitude = iLatitude
+					mLongitude = iLongitude
+					mHasLocation = true
+					
+					$('#location_status').text("(kem u gevonden)");
+					GentseFeesten.getAddressByLocation(
+						mLatitude,
+						mLongitude,
+						function(iAddress) {
+							$('#location_status').text("(" + iAddress + ")");
+						},
+						function(iError) {
+							$('#location_status').text("(kem u gevonden, ma kweet ni waar)");
+						}
+					);
 		
-						populateList();
-					},
-					function(error) {
-						alert(error);		
-				});
+					populateList();
+				},
+				function (error) {
+					$('#location_status').text("(kvind u ni, zeg het mij es)");
+			});
+			
+			// Request a list of events
+			var date = new Date();
+			GentseFeesten.getEvents(
+				date.getDate() - 15 + 1,	// FIXME: +1 for development purposes
+				function(iEvents) {
+					mEvents = iEvents
+					mHasEvents = true
+	
+					populateList();
+				},
+				function(error) {
+					alert("Oeie, tmarcheert precies ni...");	
 			});
 			
 			// Catch an address specification
@@ -218,7 +215,7 @@
 			</div>
 
 			<div data-role="footer">
-			  <h4>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h4>
+			  <h5>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h5>
 			</div>
 		</div>
 
