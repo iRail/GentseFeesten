@@ -78,7 +78,7 @@ var GentseFeesten = new function() {
 			},
 			{
 				maximumAge:	age,	// Maximum 10 minutes old
-				timeout:	2000	// Time-out after 10 seconds
+				timeout:	10000	// Time-out after 10 seconds
 			}
 		);
 	}

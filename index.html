@@ -146,6 +146,7 @@
 						mLatitude,
 						mLongitude,
 						function(iAddress) {
+                         			        $('#location_status_div').trigger("collapse");
 							$('#location_status').text("(" + iAddress + ")");
 						},
 						function(iError) {
@@ -157,12 +158,13 @@
 				},
 				function (error) {
 					$('#location_status').text("(kvind u ni, zeg het mij es)");
+               			        $('#location_status_div').trigger("expand");
 			});
 			
 			// Request a list of events
 			var date = new Date();
 			GentseFeesten.getEvents(
-				date.getDate() - 15 + 1,	// FIXME: +1 for development purposes
+				date.getDate() - 15,	// FIXED +1
 				function(iEvents) {
 					mEvents = iEvents
 					mHasEvents = true
@@ -170,7 +172,7 @@
 					populateList();
 				},
 				function(error) {
-					alert("Oeie, tmarcheert precies ni...");	
+					alert("Oeie, tmarcheert precies ni...");
 			});
 			
 			// Catch an address specification
@@ -187,7 +189,7 @@
 					$('#location_status').text("(" + iFormattedAddress + ")");
 					populateList()
 				}, function(iError) {
-					$('#location_status').text("(ksnap der niks van, probeert nog es)");
+					$('#location_status').text("(ksnap der niks van, probeert nog ne kier)");
 				}
 			);
 		}
@@ -197,14 +199,16 @@
 		<div id="home" data-role="page">
 
 			<div data-role="header">
+				<a href="javascript:window.location.reload()" class="ui-btn-left" data-icon="refresh">Herladen</a>
 				<h1>Gentse Feesten</h1>
+				<a href="#about" class="ui-btn-right" data-icon="info">Informoasje</a>
 			</div>
 
 			<div id="divContent" data-role="content">
-				<div data-role="collapsible" data-collapsed="true">
+				<div data-role="collapsible" data-collapsed="true" id="location_status_div">
 					<h3 id="locationheader">Mijn plekske <i id="location_status">(aant zoeken...)</i></h3>
 					<div data-role="fieldcontain">
-						<form action="form.php" method="post">
+						<form method="post">
 							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
 							<input id="clickme" type="button" value="Vint da ne kier" onclick="javascript:searchLocation()"/>
 						</form>
@@ -239,7 +243,7 @@
 
 			<div data-role="footer">
 			  <p align="center">
-			    <small>Vertoald door Bart Rosseau - &copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></small>
+			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
 			  </p>
 			</div>
 		</div>
@@ -255,7 +259,36 @@
 
 			<div data-role="footer">
 			  <p align="center">
-			    <small>Vertoald door Bart Rosseau - &copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></small>
+			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
+			  </p>
+			</div>
+		</div>
+
+		<div id="about" data-role="page">
+
+			<div data-role="header">
+				<a href='#' class='ui-btn-left' data-icon='arrow-l' onclick="history.back(); return false">Back</a>
+				<h1>Over ons</h1>			
+			</div>
+
+			<div data-role="content">
+			  <ul>
+			    <li>Vertoald door <a href="http://www.twitter.com/BartRosseau" target="_blank">Bart Rosseau</a> - Ambtenaar 2.0</li>
+			    <li>Uitgewerkt tijdens <a href="http://www.summerofcode.be" target="_blank">iRail Summer of Code</a></li>
+			    <li>Open source: <a href="http://github.com/iRail/GentseFeesten/" target="_blank">broncode</a></li>
+			    <li>Auteurs:
+			      <ul>
+				<li>Dimitri Roose - dimitri at iRail.be</li>
+				<li>Tim Besard - tim at iRail.be</li>
+				<li>Pieter Colpaert - pieter at iRail.be</li>
+			    </ul></li>
+			    <li>Met dank aan Stad Gent en iedereen die zijn steentje bijdroeg tot het openen van deze data</li>
+			  </ul>
+			</div>
+
+			<div data-role="footer">
+			  <p align="center">
+			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
 			  </p>
 			</div>
 		</div>
