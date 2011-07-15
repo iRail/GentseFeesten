@@ -18,7 +18,7 @@ var GentseFeesten = new function() {
 		}
 	
 		// Manage current day
-		var cachedData = $.parseJSON(localStorage.getItem("day_" + day))
+		var cachedData = $.parseJSON(localStorage.getItem("day_" + day));
 		if (cachedData == null) {
 			$.ajax({
 				url: 'js/data/day_' + day + '.json',
