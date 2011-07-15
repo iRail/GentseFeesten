@@ -155,23 +155,22 @@
 			
 			// Catch an address specification
 			var t = $('#location_address');
-			$('#location_address').keypress(function(iEvent) {
-				if (iEvent.which == 13) {
-					GentseFeesten.getLocationByAddress(
-						$('#location_address').val(),
-						function(iLatitude, iLongitude, iFormattedAddress) {
-							mHasLocation = true
-							mLatitude = iLatitude
-							mLongitude = iLongitude
-							$('#location_status').text("(" + iFormattedAddress + ")");
-							populateList()
-						}, function(iError) {
-							$('#location_status').text("(ksnap der niks van, probeert nog es)");
-						}
-					);
-				}
-			});
 		});
+		
+		function searchLocation() {
+			GentseFeesten.getLocationByAddress(
+				$('#location_address').val(),
+				function(iLatitude, iLongitude, iFormattedAddress) {
+					mHasLocation = true
+					mLatitude = iLatitude
+					mLongitude = iLongitude
+					$('#location_status').text("(" + iFormattedAddress + ")");
+					populateList()
+				}, function(iError) {
+					$('#location_status').text("(ksnap der niks van, probeert nog es)");
+				}
+			);
+		}
 		</script>
 	</head>
 	<body>
@@ -185,7 +184,10 @@
 				<div data-role="collapsible" data-collapsed="true">
 					<h3 id="locationheader">Locatie <i id="location_status">(aant zoeken...)</i></h3>
 					<div data-role="fieldcontain">
-						<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
+						<form action="form.php" method="post">
+							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
+							<input id="clickme" type="button" value="Zoek" onclick="javascript:searchLocation()"/>
+						</form>
 					</div>
 				</div>
 				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b" style="visibility: hidden;">
