@@ -7,10 +7,10 @@
 		Remove this if you use the .htaccess -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-		<title>index</title>
+		<title>Gentse Feesten</title>
 		<meta name="description" content="" />
-		<meta name="generator" content="Studio 3 http://aptana.com/" />
 		<meta name="author" content="Dimitri Roose" />
+		<meta name="author" content="Tim Besard" />
 
 		<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0" /> -->
 
@@ -19,31 +19,96 @@
 		<!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
 
 		<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.0b1.css" />
+		<script type="text/javascript" src="js/modernizr-2.0.6.js"></script>
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
-		<script type="text/javascript" src="js/jquery.mobile-1.0b1.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.0b1.js"></script>	
+		<script type="text/javascript" src="js/gentsefeesten.js"></script>
 		<script type="text/javascript">
-		$('document').ready( function() {
-			/*
-			 * Asynchronous call to get the JSON.
-			 */			
-			$.ajax({
-				url: "js/data/day_1.json",
-				async:	false,
-				dataType: 'json',
-				success: function(data) {
-					// Populate the events.
-					$.each(data, function(index) {
-						$('#events li.template')
+		//
+		// Static data
+		//
+		
+		var mHasLocation = false
+		var mLatitude, mLongitude
+		
+		var mHasEvents
+		var mEvents
+		
+		var mRadius = 2
+		
+		
+		//
+		// UI creation
+		//
+		
+		function populateList() {
+			if (mHasLocation && mHasEvents) {
+				// Filter the events
+				var date = new Date();
+				tEventPartitions = GentseFeesten.filterEvents(mEvents, mLatitude, mLongitude, mRadius, date.getHours())
+				
+				// Populate the events (quite brute for now)
+				var t = $('#events li.template')
+				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
+					$.each(tPartition, function (tEventIndex, tEvent) {
+						var item = $('#events li.template')
 							.clone()
-							.attr("id", "event_" + index)
+							.attr("id", "event_" + tPartitionIndex + "_" + tEventIndex)
 							.removeClass("template")
-							.appendTo('#events')
-							.append($('<a>')
-								.attr("href", "#event")
-								.text(this.title));
+							.appendTo('#events');
+						$('a', item)
+							.attr("href", "#event")
+							.text(tEvent.title);
 					});
-					$('#events li.template').remove()
-				}
+				});
+				$('#events li.template').remove()
+				$('#events').listview("refresh");
+			}
+		}
+		
+		
+		//
+		// Event handlers
+		//
+		
+		function onLocationSuccess(iLatitude, iLongitude, iAccuracy) {
+			mLatitude = iLatitude
+			mLongitude = iLongitude
+			mHasLocation = true
+			
+			populateList();
+		}
+		
+		function onLocationFailure(error) {
+			alert(error);
+		}
+		
+		
+		function onEventsSuccess(iEvents) {
+			mEvents = iEvents
+			mHasEvents = true
+			
+			populateList();
+		}
+		
+		function onEventsFailure(error) {
+			alert(error);		
+		}
+		
+		
+		//
+		// Main
+		//
+		
+		$('document').ready(function() {
+			// Load the data when a page is about to be shown
+			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) { 
+				// Request a list of events
+				var date = new Date();
+				GentseFeesten.getEvents(date.getDate() - 15 + 1, onEventsSuccess, onEventsFailure);	// FIXME: +1 for development purposes
+			
+				// Request the current location
+				GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
 			});
 		});
 		</script>
@@ -59,7 +124,9 @@
 
 			<div id="divContent" data-role="content">
                 <ul id="events" data-role="listview" data-inset="true"> 
-                        <li class="template"></li>
+                        <li class="template">
+                        	<a href=""> </a>
+                        </li>
                 </ul>
 			</div>
 
