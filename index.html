@@ -102,11 +102,11 @@
 		
 		$('document').ready(function() {
 			// Load the data when a page is about to be shown
-			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) { 
+			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) {
 				// Request a list of events
 				var date = new Date();
 				GentseFeesten.getEvents(date.getDate() - 15 + 1, onEventsSuccess, onEventsFailure);	// FIXME: +1 for development purposes
-			
+				
 				// Request the current location
 				GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
 			});

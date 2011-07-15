@@ -78,6 +78,21 @@ var GentseFeesten = new function() {
 			}
 		);
 	}
+	
+	this.getLocationByAddress = function(iAddress, cbSuccess, cbError) {
+		$.getJSON("http://maps.google.com/maps/api/geocode/json?address="+iAddress+"&sensor=false",
+			function(iResponse, iStatus) {
+				if (iResponse.results.length < 1) {
+					cbError("couldn't fetch results")
+				} else {
+					cbSuccess(
+						iResponse.results[0].geometry.location.lat,
+						iResponse.results[0].geometry.location.lng
+					)
+				}
+		});
+
+	}
 
 	/*
 		data: list of events, JSON result of getEvents
