@@ -63,25 +63,28 @@
 				// Populate the events (quite brute for now)
 				var t = $('#events li.template')
 				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
-					var tPartitionItem = $('#listDivider').clone();
-					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-					$(".title", tPartitionItem).text(tPartitionIndex+date.getHours()-1);
-					$(".counter", tPartitionItem).text(tPartition.length);
-					tPartitionItem.appendTo($('#events'));
+					if (tPartition.length > 0) {
+						var tPartitionItem = $('#listDivider').clone();
+						tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
+						$(".title", tPartitionItem).text("Vanaf " + (tPartitionIndex+date.getHours()-1) + " uur");
+						$(".counter", tPartitionItem).text(tPartition.length + " events");
+						tPartitionItem.appendTo($('#events'));
 					
-					$.each(tPartition, function (tEventIndex, tEvent) {
-						var tEventItem = $('#item').clone();
-						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
-						$('#title', tEventItem).text(tEvent.title);
-						$('#start', tEventItem).text(tEvent.schedule.start);
-						$('.location .description', tEventItem).text(tEvent.location.description)
-						$('.location .distance', tEventItem).text(readableDistance(1000*tEvent.location.distance) + " van hier")
-						$('a', tEventItem).attr('href', '#page');				
-						tEventItem.appendTo($('#events'));
-					});
+						$.each(tPartition, function (tEventIndex, tEvent) {
+							var tEventItem = $('#item').clone();
+							tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
+							$('#title', tEventItem).text(tEvent.title);
+							$('#start', tEventItem).text(tEvent.schedule.start);
+							$('.location .description', tEventItem).text(tEvent.location.description)
+							$('.location .distance', tEventItem).text(readableDistance(1000*tEvent.location.distance) + " van hier")
+							$('a', tEventItem).attr('href', '#page');				
+							tEventItem.appendTo($('#events'));
+						});
+					}
 				});
 				$('#listDivider').remove();
 				$('#item').remove();
+				$('#events').attr("style", "")
 			}
 		}
 		
@@ -169,7 +172,7 @@
 						<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
 					</div>
 				</div>
-				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b">
+				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b" style="visibility: hidden;">
 					<li id="listDivider" class="ui-li ui-li-divider ui-btn ui-bar-b ui-btn-up-undefined" role="heading" data-role="list-divider">
 						<span class="title"></span>
 						<span class="counter ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
