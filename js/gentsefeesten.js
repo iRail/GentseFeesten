@@ -2,6 +2,8 @@ var GentseFeesten = new function() {
 	//
 	// API
 	//
+	
+	var geocoder = new google.maps.Geocoder();
 
 	/*
 		day: what day to fetch data for (1 <= day <= 10)
@@ -82,33 +84,29 @@ var GentseFeesten = new function() {
 	}
 	
 	this.getLocationByAddress = function(iAddress, cbSuccess, cbError) {
-		$.getJSON("http://maps.google.com/maps/api/geocode/json?address="+iAddress+"&sensor=false",
-			function(iResponse, iStatus) {
-				if (iResponse.results.length < 1) {
-					cbError("couldn't fetch results")
-				} else {
-					cbSuccess(
-						iResponse.results[0].geometry.location.lat,
-						iResponse.results[0].geometry.location.lng,
-						iResponse.results[0].formatted_address
-					)
-				}
+		geocoder.geocode({ 'address': iAddress }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				cbSuccess(
+					results[0].geometry.location.lat(),
+					results[0].geometry.location.lng(),
+					results[0].formatted_address
+				)
+			}
+			else {
+				cbError("couldn't fetch location")
+			}
 		});
 	}
 	
-	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {	
-		$.ajax({
-			url: "http://maps.google.com/maps/api/geocode/json?latlng="+iLatitude+","+iLongitude+"&sensor=false",
-			async:	true,
-			dataType: 'json',
-			success: function(iResponse, iStatus) {
-				if (iResponse.results.length < 1) {
-					cbError("couldn't fetch results")
-				} else {
-					cbSuccess(
-						iResponse.results[0].formatted_address
-					)
-				}
+	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {
+		geocoder.geocode({ 'latlng': iLatitude+","+iLongitude }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				cbSuccess(
+					results[0].formatted_address
+				)
+			}
+			else {
+				cbError("couldn't fetch address")
 			}
 		});
 	}
