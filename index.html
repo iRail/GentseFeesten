@@ -72,10 +72,10 @@
 					$.each(tPartition, function (tEventIndex, tEvent) {
 						var tEventItem = $('#item').clone();
 						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
-						$('#title', item).text(tEvent.title);
-						$('#start', item).text(tEvent.schedule.start);
-						$('.location .description', item).text(tEvent.location.description)
-						$('.location .distance', item).text(readableDistance(1000*tEvent.location.distance) + " van hier")
+						$('#title', tEventItem).text(tEvent.title);
+						$('#start', tEventItem).text(tEvent.schedule.start);
+						$('.location .description', tEventItem).text(tEvent.location.description)
+						$('.location .distance', tEventItem).text(readableDistance(1000*tEvent.location.distance) + " van hier")
 						$('a', tEventItem).attr('href', '#page');				
 						tEventItem.appendTo($('#events'));
 					});
@@ -87,35 +87,6 @@
 		
 		
 		//
-		// Event handlers
-		//
-		
-		function onLocationSuccess(iLatitude, iLongitude, iAccuracy) {
-			mLatitude = iLatitude
-			mLongitude = iLongitude
-			mHasLocation = true
-			
-			populateList();
-		}
-		
-		function onLocationFailure(error) {
-			$('#location_status').text("(kvind u ni, zeg het mij es)");
-		}
-		
-		
-		function onEventsSuccess(iEvents) {
-			mEvents = iEvents
-			mHasEvents = true
-			
-			populateList();
-		}
-		
-		function onEventsFailure(error) {
-			alert(error);		
-		}
-		
-		
-		//
 		// Main
 		//
 		
@@ -123,11 +94,42 @@
 			// Load the data when a page is about to be shown
 			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) {
 				// Request the current location
-				GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
+				GentseFeesten.getLocation(
+					function onLocationSuccess(iLatitude, iLongitude, iAccuracy) {
+						mLatitude = iLatitude
+						mLongitude = iLongitude
+						mHasLocation = true
+						
+						GentseFeesten.getAddressByLocation(
+							mLatitude,
+							mLongitude,
+							function(iAddress) {
+								$('#location_status').text("(" + iAddress + ")");
+							},
+							function(iError) {
+								$('#location_status').text("(kem u gevonden)");
+							}
+						);
+			
+						populateList();
+					},
+					function (error) {
+						$('#location_status').text("(kvind u ni, zeg het mij es)");
+				});
 				
 				// Request a list of events
 				var date = new Date();
-				GentseFeesten.getEvents(date.getDate() - 15 + 1, onEventsSuccess, onEventsFailure);	// FIXME: +1 for development purposes
+				GentseFeesten.getEvents(
+					date.getDate() - 15 + 1,	// FIXME: +1 for development purposes
+					function(iEvents) {
+						mEvents = iEvents
+						mHasEvents = true
+		
+						populateList();
+					},
+					function(error) {
+						alert(error);		
+				});
 			});
 			// Catch an address specification
 			var t = $('#location_address');
