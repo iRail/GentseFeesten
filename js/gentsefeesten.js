@@ -99,7 +99,7 @@ var GentseFeesten = new function() {
 	}
 	
 	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {
-		geocoder.geocode({ 'latlng': iLatitude+","+iLongitude }, function (results, status) {
+		geocoder.geocode({ 'latLng': new google.maps.LatLng(iLatitude, iLongitude)}, function (results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				cbSuccess(
 					results[0].formatted_address
