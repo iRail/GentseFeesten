@@ -101,6 +101,7 @@
 						mLongitude = iLongitude
 						mHasLocation = true
 						
+						$('#location_status').text("(kem u gevonden)");
 						GentseFeesten.getAddressByLocation(
 							mLatitude,
 							mLongitude,
@@ -108,7 +109,7 @@
 								$('#location_status').text("(" + iAddress + ")");
 							},
 							function(iError) {
-								$('#location_status').text("(kem u gevonden)");
+								$('#location_status').text("(kem u gevonden, ma kweet ni waar)");
 							}
 						);
 			

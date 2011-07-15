@@ -96,9 +96,12 @@ var GentseFeesten = new function() {
 		});
 	}
 	
-	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {
-		$.getJSON("http://maps.google.com/maps/api/geocode/json?latlng="+iLatitude+","+iLongitude+"&sensor=false",
-			function(iResponse, iStatus) {
+	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {	
+		$.ajax({
+			url: "http://maps.google.com/maps/api/geocode/json?latlng="+iLatitude+","+iLongitude+"&sensor=false",
+			async:	true,
+			dataType: 'json',
+			success: function(iResponse, iStatus) {
 				if (iResponse.results.length < 1) {
 					cbError("couldn't fetch results")
 				} else {
@@ -106,6 +109,7 @@ var GentseFeesten = new function() {
 						iResponse.results[0].formatted_address
 					)
 				}
+			}
 		});
 	}
 
