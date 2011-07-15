@@ -69,7 +69,7 @@
 					if (tPartition.length > 0) {
 						var tPartitionItem = $('#listDivider').clone();
 						tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-						$(".title", tPartitionItem).text("Vanaf " + (tPartitionIndex+date.getHours()-1) + " uur");
+						$(".title", tPartitionItem).text('Achter den "datum" ' + (tPartitionIndex+date.getHours()-1) + " uur");
 						$(".counter", tPartitionItem).text(tPartition.length + " events");
 						tPartitionItem.appendTo($('#events'));
 					
@@ -121,7 +121,7 @@
 					mLongitude = iLongitude
 					mHasLocation = true
 					
-					$('#location_status').text("(kem u gevonden)");
+					$('#location_status').text(" (kem u gevonden)");
 					GentseFeesten.getAddressByLocation(
 						mLatitude,
 						mLongitude,
@@ -129,7 +129,7 @@
 							$('#location_status').text("(" + iAddress + ")");
 						},
 						function(iError) {
-							$('#location_status').text("(kem u gevonden, ma kweet ni waar)");
+							$('#location_status').text(" (kem u gevonden, ma kweet ni waar)");
 						}
 					);
 		
@@ -182,7 +182,7 @@
 
 			<div id="divContent" data-role="content">
 				<div data-role="collapsible" data-collapsed="true">
-					<h3 id="locationheader">Locatie <i id="location_status">(aant zoeken...)</i></h3>
+					<h3 id="locationheader">Mijn plekske <i id="location_status">(aant zoeken...)</i></h3>
 					<div data-role="fieldcontain">
 						<form action="form.php" method="post">
 							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
@@ -218,7 +218,7 @@
 			</div>
 
 			<div data-role="footer">
-			  <h5>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h5>
+			  <h5>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></h5>
 			</div>
 		</div>
 
@@ -232,7 +232,7 @@
 			</div>
 
 			<div data-role="footer">
-			  <h4>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemaakt tijdens <a href="http://summerofcode.be" target="_blank">iRail summer of code</a></h4>
+			  <h4>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></h4>
 			</div>
 		</div>
 	</body>
