@@ -21,46 +21,32 @@
 		<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.0b1.css" />
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
 		<script type="text/javascript" src="js/jquery.mobile-1.0b1.js"></script>
-		<script type="text/javascript" src="js/gentse_feesten.js"></script>
-		<!-- <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.css" />
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script> -->
-		<script type="text/javascript">/**/
-			$('document').ready( function() {
-				performGeolocation();
-				/*
-				 * Check wether geolocation didn't cause an error.
-				 */
-				var geolocationError = getSessionValue('geolocationError');
-				if( typeof(geolocationError) == undefined ) {
-					/*
-					 * Generate error.
-					 */
-				}
-				/*
-				 * Asynchronous call to get the JSON.
-				 */
-				$.getJSON("js/data/day_1.json", function(data) {
-					/*
-					 * Populate the events.
-					 */
+		<script type="text/javascript">
+		$('document').ready( function() {
+			/*
+			 * Asynchronous call to get the JSON.
+			 */			
+			$.ajax({
+				url: "js/data/day_1.json",
+				async:	false,
+				dataType: 'json',
+				success: function(data) {
+					// Populate the events.
 					$.each(data, function(index) {
-						$('#home li.template')
-	                        .clone()
-	                        .attr("id", "event_" + index)
-	                        .removeClass("template")
-	                        .appendTo('#events')
-	                        .append($('<a>')
-	                                .attr("href", "#event")
-	                                .text(this.title));
-						/*$('#a' + key).click( function() {
-						 setSessionValue('eventID', JSON.stringify(value));
-						 });*/
+						$('#events li.template')
+							.clone()
+							.attr("id", "event_" + index)
+							.removeClass("template")
+							.appendTo('#events')
+							.append($('<a>')
+								.attr("href", "#event")
+								.text(this.title));
 					});
 					$('#events li.template').remove()
-				})
+				}
 			});
-			/**/</script>
+		});
+		</script>
 	</head>
 	<body>
 		<div id="home" data-role="page" >
