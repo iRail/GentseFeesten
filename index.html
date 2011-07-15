@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl" manifest="/appcache.mf">
 	<head>
 		<meta charset="utf-8" />
 
@@ -13,11 +13,19 @@
 		<meta name="author" content="Pieter Colpaert" />
 		<meta name="author" content="Tim Besard" />
 
-		<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0" /> -->
 
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-		<!-- <link rel="shortcut icon" href="/favicon.ico" /> -->
-		<!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
+		<!-- as not every OS supports HTML-less icon detection, provide this in details, and link to imgage dir instead of root -->
+		
+		<!-- 1. iPhone 4/retina --> 
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/gentsefeesten.png">
+		<!-- iPad G1 -->
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/gentsefeesten.png">
+		<!-- non-retina iPhone, iPod Touch, Android 2.1+ -->
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/gentsefeesten.png">
+		<!-- everything else, provider higher resolution img -->
+		<link rel="apple-touch-icon-precomposed" href="/gentsefeesten.png">
+
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 
 		<link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.0b1.css" />
 		<script type="text/javascript" src="js/modernizr-2.0.6.js"></script>
@@ -26,6 +34,18 @@
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="js/gentsefeesten.js"></script>
 		<script type="text/javascript">
+
+		  window.addEventListener('load', function(e) {
+		  window.applicationCache.update();
+		  window.applicationCache.addEventListener('updateready', function(e) {
+		  if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+		  window.applicationCache.swapCache();
+		  window.location.reload();
+		  }
+		  }, false);
+		
+		}, false);
+
 		//
 		// Static data
 		//
