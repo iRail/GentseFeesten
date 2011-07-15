@@ -29,7 +29,7 @@ var GentseFeesten = new function() {
 		}
 	
 		// Manage current day
-		var cachedData = localStorage.getItem("day_" + day)
+		var cachedData = $.parseJSON(localStorage.getItem("day_" + day))
 		if (cachedData == null) {
 			$.ajax({
 				url: 'js/data/day_' + day + '.json',
@@ -37,7 +37,7 @@ var GentseFeesten = new function() {
 				dataType: 'json',
 				success: function(data) {
 					// TODO: QUOTA_EXCEEDED, remove previous days?
-					localStorage.setItem("day_" + day, data);
+					localStorage.setItem("day_" + day, JSON.stringify(data));
 					cbEventSuccess(data)
 				}
 			});
