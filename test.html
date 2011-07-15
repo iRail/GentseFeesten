@@ -36,11 +36,16 @@ function getEvents(day, cbSuccess, cbError) {
 	// Manage current day
 	var cachedData = localStorage.getItem("day_" + day)
 	if (cachedData == null) {
-		$.getJSON('js/data/day_' + day + '.json', function(data) {
-			// TODO: QUOTA_EXCEEDED, remove previous days?
-			localStorage.setItem("day_" + day, data);
-			cbEventSuccess(data)
-		})
+		$.ajax({
+			url: 'js/data/day_' + day + '.json',
+			async:	false,
+			dataType: 'json',
+			success: function(data) {
+				// TODO: QUOTA_EXCEEDED, remove previous days?
+				localStorage.setItem("day_" + day, data);
+				cbEventSuccess(data)
+			}
+		});
 	} else {
 		cbEventSuccess(cachedData)
 	}
