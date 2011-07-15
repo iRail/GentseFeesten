@@ -89,7 +89,7 @@
 					if (tPartition.length > 0) {
 						var tPartitionItem = $('#listDivider').clone();
 						tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-						$(".title", tPartitionItem).text('Achter den "datum" ' + (tPartitionIndex+date.getHours()-1) + " uur");
+						$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()-1) + " uur");
 						$(".counter", tPartitionItem).text(tPartition.length + " events");
 						tPartitionItem.appendTo($('#events'));
 					
@@ -206,7 +206,7 @@
 					<div data-role="fieldcontain">
 						<form action="form.php" method="post">
 							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
-							<input id="clickme" type="button" value="Zoek" onclick="javascript:searchLocation()"/>
+							<input id="clickme" type="button" value="Vint da ne kier" onclick="javascript:searchLocation()"/>
 						</form>
 					</div>
 				</div>
@@ -238,7 +238,9 @@
 			</div>
 
 			<div data-role="footer">
-			  <h5>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></h5>
+			  <p align="center">
+			    <small>Vertoald door Bart Rosseau - &copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></small>
+			  </p>
 			</div>
 		</div>
 
@@ -252,7 +254,9 @@
 			</div>
 
 			<div data-role="footer">
-			  <h4>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></h4>
+			  <p align="center">
+			    <small>Vertoald door Bart Rosseau - &copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Gemoakt tijdens <a href="http://summerofcode.be" target="_blank">iRail Summer of Code</a></small>
+			  </p>
 			</div>
 		</div>
 	</body>
