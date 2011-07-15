@@ -94,7 +94,19 @@ var GentseFeesten = new function() {
 					)
 				}
 		});
-
+	}
+	
+	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {
+		$.getJSON("http://maps.google.com/maps/api/geocode/json?latlng="+iLatitude+","+iLongitude+"&sensor=false",
+			function(iResponse, iStatus) {
+				if (iResponse.results.length < 1) {
+					cbError("couldn't fetch results")
+				} else {
+					cbSuccess(
+						iResponse.results[0].formatted_address
+					)
+				}
+		});
 	}
 
 	/*
