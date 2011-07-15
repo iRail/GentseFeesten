@@ -38,6 +38,19 @@
 		
 		
 		//
+		// Auxiliary
+		//
+		
+		function readableDistance(iMeters) {
+			if (iMeters > 1000) {
+				var tKilometers = iMeters/1000
+				return Math.round(tKilometers*100)/100 + " km"
+			}
+			return Math.round(iMeters) + " m"
+		}
+		
+		
+		//
 		// UI creation
 		//
 		
@@ -61,7 +74,8 @@
 						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
 						$('#title', item).text(tEvent.title);
 						$('#start', item).text(tEvent.schedule.start);
-						$('#location', item).text(tEvent.location.description);	
+						$('.location .description', item).text(tEvent.location.description)
+						$('.location .distance', item).text(readableDistance(1000*tEvent.location.distance) + " van hier")
 						$('a', tEventItem).attr('href', '#page');				
 						tEventItem.appendTo($('#events'));
 					});
@@ -167,7 +181,10 @@
 
 								<h3 id="title"></h3>
 								<p>
-									<strong id="location" ></strong>
+									<strong class="location" >
+										<span class="description"> </span>
+										<i> (<span class="distance"> </span>)</i>
+									</strong>
 								</p>
 								</a>
 							</div>
