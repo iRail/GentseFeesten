@@ -4,27 +4,16 @@ var GentseFeesten = new function() {
 	//
 
 	/*
-		Static data members
-	*/
-	
-	var cbEventError, cbEventSuccess
-	
-	var cbLocationSuccess, cbLocationError
-
-	/*
 		day: what day to fetch data for (1 <= day <= 10)
 		cbSuccess(data)
 		cbError(reason)
 	*/
-	this.getEvents = function(day, cbSuccess, cbError) {
-		cbEventError = cbError
-		cbEventSuccess = cbSuccess
-	
+	this.getEvents = function(day, cbSuccess, cbError) {	
 		if (day < 0 || day > 10)
-			cbEventError("invalid day requested")
+			cbError("invalid day requested")
 	
 		if (! Modernizr.localstorage) {
-			cbEventError("no localstorage accessible")
+			cbError("no localstorage accessible")
 			return
 		}
 	
@@ -38,11 +27,11 @@ var GentseFeesten = new function() {
 				success: function(data) {
 					// TODO: QUOTA_EXCEEDED, remove previous days?
 					localStorage.setItem("day_" + day, JSON.stringify(data));
-					cbEventSuccess(data)
+					cbSuccess(data)
 				}
 			});
 		} else {
-			cbEventSuccess(cachedData)
+			cbSuccess(cachedData)
 		}
 	}
 
@@ -52,9 +41,6 @@ var GentseFeesten = new function() {
 		cached: indicates whether a cached entry can be used (default: true)
 	*/
 	this.getLocation = function(cbSuccess, cbError, cached) {
-		cbLocationError = cbError
-		cbLocationSuccess = cbSuccess
-	
 		if (typeof cached === "undefined")
 			cached = true
 		var age = 0
@@ -69,12 +55,28 @@ var GentseFeesten = new function() {
 	
 		// Fetch a psition
 		navigator.geolocation.getCurrentPosition(
-			onLocationSuccess,
-			onLocationError,
+			function(position) {
+				var latitude = position.coords.latitude;
+				var longitude = position.coords.longitude;
+	
+				cbSuccess(
+					position.coords.latitude,
+					position.coords.longitude,
+					position.coords.accuracy
+				)
+			},
+			function(error) {
+				switch(error.code) {
+					case error.TIMEOUT:
+						cbError("time-out")
+						break;
+					default:
+						cbError("unknown error")
+				};
+			},
 			{
-				// TODO: do not use cached entries on a forced refresh
-				maximumAge:	cached,	// Maximum 10 minutes old
-				timeout:	30000	// Time-out after 30 seconds
+				maximumAge:	age,	// Maximum 10 minutes old
+				timeout:	2000	// Time-out after 10 seconds
 			}
 		);
 	}
@@ -87,7 +89,8 @@ var GentseFeesten = new function() {
 				} else {
 					cbSuccess(
 						iResponse.results[0].geometry.location.lat,
-						iResponse.results[0].geometry.location.lng
+						iResponse.results[0].geometry.location.lng,
+						iResponse.results[0].formatted_address
 					)
 				}
 		});
@@ -131,32 +134,6 @@ var GentseFeesten = new function() {
 		});
 	
 		return dataPartitions
-	}
-
-
-	//
-	// Event handlers
-	//
-
-	var onLocationSuccess = function(position) {
-		var latitude = position.coords.latitude;
-		var longitude = position.coords.longitude;
-	
-		cbLocationSuccess(
-			position.coords.latitude,
-			position.coords.longitude,
-			position.coords.accuracy
-		)
-	}
-
-	var onLocationError = function(error) {
-		switch(error.code) {
-			case error.TIMEOUT:
-				cbLocationError("time-out")
-				break;
-			default:
-				cbLocationError("unknown error")
-		};
 	}
 
 
