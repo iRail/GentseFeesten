@@ -105,7 +105,7 @@ while (my $row = $csv->getline($input)) {
 	die "!! Could not look-up location '$plaats'\n" unless (defined $result);
 	my ($lat, $lng) = @$result;
 	print "   $lat x $lng\n";
-	print $csvext "$line;$lat;$lng\n";
+	print $csvext "$line,$lat,$lng\n";
 	
 	# Construct object
 	print "-- Constructing object\n";
