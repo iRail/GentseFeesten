@@ -84,7 +84,7 @@ my $data = {};
 open(my $csvext, '>', $csvextfile);
 open (my $input, '<', $infile);
 while (my $row = $csv->getline($input)) {
-	my $line = $csv->string();
+	chomp(my $line = $csv->string());
 	# Fix inability of CSV_XS to handle UTF8 strings.
 	utf8::decode ($_) for @$row;
 	if (@$row != 8) {
