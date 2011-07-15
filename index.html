@@ -34,7 +34,7 @@
 		var mHasEvents
 		var mEvents
 		
-		var mRadius = 2
+		var mRadius = 2000
 		
 		
 		//
@@ -50,19 +50,21 @@
 				// Populate the events (quite brute for now)
 				var t = $('#events li.template')
 				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
+					var tPartitionItem = $('#listDivider').clone();
+					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
+					tPartitionItem.text(tPartitionIndex+date.getHours()-1).appendTo($('#events'));
+					
 					$.each(tPartition, function (tEventIndex, tEvent) {
-						var item = $('#events li.template')
-							.clone()
-							.attr("id", "event_" + tPartitionIndex + "_" + tEventIndex)
-							.removeClass("template")
-							.appendTo('#events');
-						$('a', item)
-							.attr("href", "#event")
-							.text(tEvent.title);
+						var tEventItem = $('#item').clone();
+						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
+						$('#title', item).text(tEvent.title);
+						$('#distance', item).text(tEvent.location.distance);
+						$('#location', item).text(tEvent.location.description);								
+						tEventItem.appendTo($('#events'));
 					});
 				});
-				$('#events li.template').remove()
-				$('#events').listview("refresh");
+				$('#listDivider').remove();
+				$('#item').remove();
 			}
 		}
 		
@@ -103,12 +105,15 @@
 		$('document').ready(function() {
 			// Load the data when a page is about to be shown
 			$('#home[data-role=page]').live('pageshow',function(iEvent, iUi) {
+				// Request the current location
+				//GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
+				mHasLocation = true
+				mLatitude = 51
+				mLongitude = 3
+				
 				// Request a list of events
 				var date = new Date();
 				GentseFeesten.getEvents(date.getDate() - 15 + 1, onEventsSuccess, onEventsFailure);	// FIXME: +1 for development purposes
-				
-				// Request the current location
-				GentseFeesten.getLocation(onLocationSuccess, onLocationFailure);
 			});
 		});
 		</script>
@@ -123,11 +128,27 @@
 			</div>
 
 			<div id="divContent" data-role="content">
-                <ul id="events" data-role="listview" data-inset="true"> 
-                        <li class="template">
-                        	<a href=""> </a>
-                        </li>
-                </ul>
+				<ul id="events" data-role="listview" data-inset="true">
+					<li id="listDivider">
+						<span id="count" class="ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
+					</li>
+					<li id="item" class="ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
+						<div class="ui-btn-inner ui-li">
+							<div class="ui-btn-text">
+								<a class="ui-link-inherit" href="">
+								<p class="ui-li-aside ui-li-desc">
+									<strong id="distance"></strong>
+								</p>
+
+								<h3 id="title"></h3>
+								<p>
+									<strong id="location" ></strong>
+								</p>
+								</a>
+							</div>
+						</div>
+					</li>
+				</ul>
 			</div>
 
 			<div data-role="footer">
