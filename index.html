@@ -12,16 +12,19 @@
 		<meta name="generator" content="Studio 3 http://aptana.com/" />
 		<meta name="author" content="Dimitri Roose" />
 
-		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0" /> -->
 
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<!-- <link rel="shortcut icon" href="/favicon.ico" /> -->
 		<!-- <link rel="apple-touch-icon" href="/apple-touch-icon.png" /> -->
 
-		<link type="text/css" rel="stylesheet" href="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.css" />
-		<script type="text/javascript" src="js/jquery.mobile-1.0b1.js"></script>
+		<!-- <link type="text/css" rel="stylesheet" href="css/jquery.mobile-1.0b1.css" />
 		<script type="text/javascript" src="js/jquery-1.6.2.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.0b1.js"></script> -->
 		<script type="text/javascript" src="js/gentse_feesten.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0b1/jquery.mobile-1.0b1.min.js"></script>
 		<script type="text/javascript">/**/
 			$('document').ready( function() {
 				performGeolocation();
@@ -34,45 +37,70 @@
 					 * Generate error.
 					 */
 				}
-			})
+				/*
+				 * Asynchronous call to get the JSON.
+				 */
+				$.getJSON("js/data/day_1.js", function(data) {
+					/*
+					 * Populate the events.
+					 */
+					$.each(data, function(key, value) {
+						$('#template')
+						.clone()
+						.attr('id', 'li' + key)
+						.appendTo('#events').append($('<a>').attr({
+							href:	'#page',
+							id:		'a' + key
+						}).text(value.title));
+
+						$('#a' + key).click( function() {
+							setSessionValue('eventID', JSON.stringify(value));
+						});
+					});
+					$('#template').remove();
+				})
+			});
 			/**/</script>
 	</head>
 	<body>
-		<div data-role="page" id="foo">
+		<div id="divHome" data-role="page" >
 
 			<div data-role="header">
-				<a href="location.html" data-rel="dialog" data-icon="gear">Location</a>
-				<a href="" data-icon="refresh">Refresh</a>
+				<a href="#location" data-rel="dialog">Location</a>
+				<a href="">Refresh</a>
 				<h1>Gentse Feesten</h1>
+			</div>
+
+			<div id="divContent" data-role="content">
+				<ul id="events" data-role="listview" data-inset="true">
+					<li id="template" class="template">
+					</li>
+				</ul>
+			</div>
+
+			<div data-role="footer">
+				<h4></h4>
+			</div>
+		</div>
+
+		<div id="location" data-role="page">
+
+			<div data-role="header">
+				<h1>Location</h1>
 			</div>
 
 			<div data-role="content">
 			</div>
+		</div>
 
-			<div data-role="footer">
-				<h4>Page Footer</h4>
+		<div id="event" data-role="page">
+
+			<div data-role="header">
+				<h1>Location</h1>
+			</div>
+
+			<div data-role="content">
 			</div>
 		</div>
-
-		<!--
-		<div data-role="page" id="bar">
-
-		<div data-role="header">
-		<h1>Bar</h1>
-		</div>
-
-		<div data-role="content">
-		<p>
-		I'm first in the source order so I'm shown as the page.
-		</p>
-		<p>
-		<a href="#foo">Back to foo</a>
-		</p>
-		</div>
-
-		<div data-role="footer">
-		<h4>Page Footer</h4>
-		</div>
-		</div>-->
 	</body>
 </html>
