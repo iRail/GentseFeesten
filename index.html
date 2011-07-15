@@ -52,13 +52,15 @@
 				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
 					var tPartitionItem = $('#listDivider').clone();
 					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-					tPartitionItem.text(tPartitionIndex+date.getHours()-1).appendTo($('#events'));
+					$(".title", tPartitionItem).text(tPartitionIndex+date.getHours()-1);
+					$(".counter", tPartitionItem).text(tPartition.length);
+					tPartitionItem.appendTo($('#events'));
 					
 					$.each(tPartition, function (tEventIndex, tEvent) {
 						var tEventItem = $('#item').clone();
 						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
 						$('#title', item).text(tEvent.title);
-						$('#distance', item).text(tEvent.location.distance);
+						$('#start', item).text(tEvent.schedule.start);
 						$('#location', item).text(tEvent.location.description);								
 						tEventItem.appendTo($('#events'));
 					});
@@ -154,14 +156,15 @@
 				</div>
 				<ul id="events" data-role="listview" data-inset="true">
 					<li id="listDivider">
-						<span id="count" class="ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
+						<span class="title"></span>
+						<span class="counter ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
 					</li>
 					<li id="item" class="ui-btn ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
 						<div class="ui-btn-inner ui-li">
 							<div class="ui-btn-text">
 								<a class="ui-link-inherit" href="">
 								<p class="ui-li-aside ui-li-desc">
-									<strong id="distance"></strong>
+									<strong id="start"></strong>
 								</p>
 
 								<h3 id="title"></h3>
