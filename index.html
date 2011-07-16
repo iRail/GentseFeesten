@@ -66,15 +66,15 @@
 		function populateEventList() {
 			// Filter the events
 			var date = new Date();
-			tEventPartitions = GentseFeesten.filterEvents(mEvents, date.getHours())
+			var tFilteredEvents = GentseFeesten.filterEvents(mEvents, date.getHours())
 			
 			// Populate the events (quite brute for now)
 			var t = $('#events li.template')
-			$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
+			$.each(tFilteredEvents.upcoming, function(tPartitionIndex, tPartition) {
 				if (tPartition.length > 0) {
 					var tPartitionItem = $('#listDivider').clone();
 					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-					$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()-1) + " uur");
+					$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()) + " uur");
 					$(".counter", tPartitionItem).text(tPartition.length + " events");
 					tPartitionItem.appendTo($('#events'));
 				
@@ -96,8 +96,6 @@
 			$('#listDivider').remove();
 			$('#item').remove();
 			$('#events').attr("style", "")
-			if (date.getHours() != 0)   // FIXME: lookup previous day as well? Reformat data?
-			    $('#events li[data-role=list-divider]:first .title').text('Nu bezig')
 		}
 		
 		function populateEvent() {

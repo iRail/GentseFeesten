@@ -53,7 +53,7 @@ var GentseFeesten = new function() {
 			return
 		}
 	
-		// Fetch a psition
+		// Fetch a position
 		navigator.geolocation.getCurrentPosition(
 			function(position) {
 				var latitude = position.coords.latitude;
@@ -87,37 +87,53 @@ var GentseFeesten = new function() {
 		longitude
 		radius: in kilometers
 	*/
-	this.filterEvents = function(data, hour) {	
+	this.filterEvents = function(data, hour) {
+	    // Resulting structures
+	    var dataOutput = {
+	        "now": Array(),
+	        "upcoming": Array(),
+	        "continuous": Array()
+	    }
+	    
+	    // Get continuous items
+	    dataOutput.continuous = $.grep(data, function(event) {
+			return (event.schedule.start === "00:00" && event.schedule.stop === "00:00")
+		});
+	    
 		// Filter on hour
 		var starthour, stophour
 		data = $.grep(data, function(event) {
+			if (event.schedule.start === "00:00" && event.schedule.stop === "00:00")
+			    return false
+			
 			starthour = event.schedule.start.substr(0, 2)
 			stophour = event.schedule.stop.substr(0, 2)
 			return (starthour >= hour || stophour >= hour)
 		});
 	
 		// Partition into hours
-		var dataPartitions = Array()
-		for (var i = 0; i < 24-hour+1; i++)
-			dataPartitions.push(Array())
+		for (var i = 0; i < 24-hour; i++)
+			dataOutput.upcoming.push(Array())
 		$.each(data, function(index, event) {
 			starthour = event.schedule.start.substr(0, 2)
 			if (starthour >= hour)
-				dataPartitions[starthour-hour+1].push(event)
+				dataOutput.upcoming[starthour-hour].push(event)
 			else
-				dataPartitions[0].push(event)
+				dataOutput.now.push(event)
 		});
 		
 		// Sort the partitions
-		$.each(dataPartitions, function() {
-		    this.sort(function(a, b) {
-			    var mina = a.schedule.start.substr(0, 2)*60 + a.schedule.start.substr(3)
-			    var minb = b.schedule.start.substr(0, 2)*60 + b.schedule.start.substr(3)
-			    return (mina - minb);
-		    });
+		function sortEvents(a, b) {
+		    var mina = a.schedule.start.substr(0, 2)*60 + a.schedule.start.substr(3)
+		    var minb = b.schedule.start.substr(0, 2)*60 + b.schedule.start.substr(3)
+		    return (mina - minb);
+	    }
+	    dataOutput.now.sort(sortEvents)
+		$.each(dataOutput.upcoming, function() {
+		    this.sort(sortEvents)
 		});
 	
-		return dataPartitions
+		return dataOutput
 	}
 
 
