@@ -100,6 +100,7 @@
 				$('#listDivider').remove();
 				$('#item').remove();
 				$('#events').attr("style", "")
+				$('#events li[data-role=list-divider]:first .title').text('Nu bezig')
 			}
 		}
 		
@@ -122,20 +123,19 @@
 		//
 		
 		$('document').ready(function() {
-
-//check the appcache
-window.applicationCache.addEventListener('updateready', function(e) {
-    if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-      // Browser downloaded a new app cache.
-      // Swap it in and reload the page to get the new hotness.
-      window.applicationCache.swapCache();
-      if (confirm('Der es een nieuwe versie beschikboar. Magk u browser herladen?')) {
-        window.location.reload();
-      }
-    } else {
-      // Manifest didn't changed. Nothing new to server.
-    }
-  }, false);
+            // Check the appcache
+            window.applicationCache.addEventListener('updateready', function(e) {
+                if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+                  // Browser downloaded a new app cache.
+                  // Swap it in and reload the page to get the new hotness.
+                  window.applicationCache.swapCache();
+                  if (confirm('Der es een nieuwe versie beschikboar. Magk u browser herladen?')) {
+                    window.location.reload();
+                  }
+                } else {
+                  // Manifest didn't changed. Nothing new to server.
+                }
+              }, false);
 
 			// Request the current location
 			GentseFeesten.getLocation(
@@ -167,7 +167,7 @@ window.applicationCache.addEventListener('updateready', function(e) {
 			// Request a list of events
 			var date = new Date();
 			GentseFeesten.getEvents(
-				date.getDate() - 15,	// FIXED +1
+				date.getDate() - 15,
 				function(iEvents) {
 					mEvents = iEvents
 					mHasEvents = true
@@ -177,9 +177,13 @@ window.applicationCache.addEventListener('updateready', function(e) {
 				function(error) {
 					alert("Oeie, tmarcheert precies ni...");
 			});
-			
-			// Catch an address specification
-			var t = $('#location_address');
+
+            // Disable enter through forms
+            $("#formwaarzijtge").keypress(function(e) {
+                if (e.which == 13) {
+                    searchLocation();
+                }
+            });
 		});
 		
 		function searchLocation() {
@@ -196,24 +200,7 @@ window.applicationCache.addEventListener('updateready', function(e) {
 				}
 			);
 		}
-
-	$('#location_address').keyup(function(event) {
-			      if ( event.which == 13 ) {
-			      searchLocation();
-			      }
-
-	});
-
-//disable enter through forms
-    $("#formwaarzijtge").keypress(function(e) {
-    if (e.which == 13) {
-    searchLocation();
-    }
-    });
-// Catch an address specification
-
-		
-		</script>
+	    </script>
 	</head>
 	<body>
 		<div id="home" data-role="page">

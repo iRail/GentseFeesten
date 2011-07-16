@@ -119,19 +119,14 @@ var GentseFeesten = new function() {
 	*/
 	this.filterEvents = function(data, latitude, longitude, radius, hour) {
 		// Filter on distance
-		data = $.grep(data, function(event){
+		data = $.grep(data, function(event) {
 			event.location.distance = distance(latitude, event.location.latitude, longitude, event.location.longitude)
 			return (event.location.distance <= radius);
-		});
-		data.sort(function(a, b) {
-			var mina = a.schedule.start.substr(0, 2)*60 + a.schedule.start.substr(2, 2)
-			var minb = b.schedule.start.substr(0, 2)*60 + b.schedule.start.substr(2, 2)
-			return (mina - minb);
 		});
 	
 		// Filter on hour
 		var starthour, stophour
-		data = $.grep(data, function(event){
+		data = $.grep(data, function(event) {
 			starthour = event.schedule.start.substr(0, 2)
 			stophour = event.schedule.stop.substr(0, 2)
 			return (starthour >= hour || stophour >= hour)
@@ -147,6 +142,15 @@ var GentseFeesten = new function() {
 				dataPartitions[starthour-hour+1].push(event)
 			else
 				dataPartitions[0].push(event)
+		});
+		
+		// Sort the partitions
+		$.each(dataPartitions, function() {
+		    this.sort(function(a, b) {
+			    var mina = a.schedule.start.substr(0, 2)*60 + a.schedule.start.substr(3)
+			    var minb = b.schedule.start.substr(0, 2)*60 + b.schedule.start.substr(3)
+			    return (mina - minb);
+		    });
 		});
 	
 		return dataPartitions
