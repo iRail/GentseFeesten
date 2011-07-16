@@ -187,6 +187,7 @@
             $("#formwaarzijtge").keypress(function(e) {
                 if (e.which == 13) {
                     searchLocation();
+                    return false;
                 }
             });
 		});
@@ -220,7 +221,7 @@
 				<div data-role="collapsible" data-collapsed="true" id="location_status_div">
 					<h3 id="locationheader">Mijn plekske <i id="location_status">(aant zoeken...)</i></h3>
 					<div data-role="fieldcontain">
-						<form action="javascript: return false" method="post" id="formwaarzijtge">
+						<form method="post" id="formwaarzijtge">
 							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
 							<input id="clickme" type="button" value="Vint da ne kier" onclick="javascript:searchLocation()"/>
 						</form>
