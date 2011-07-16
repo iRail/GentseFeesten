@@ -30,7 +30,6 @@
 		<script type="text/javascript" src="js/modernizr-2.0.6-custom.min.js"></script>
         <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
         <script type="text/javascript" src="js/jquery.mobile-1.0b1.min.js"></script>
-		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="js/gentsefeesten.js"></script>
 		<script type="text/javascript">
 
@@ -41,7 +40,6 @@
 		var mHasLocation = false
 		var mLatitude, mLongitude
 		
-		var mHasEvents
 		var mEvents
 		
 		var mRadius = 2
@@ -65,47 +63,45 @@
 		// UI creation
 		//
 		
-		function populateList() {
-			if (mHasLocation && mHasEvents) {
-				// Filter the events
-				var date = new Date();
-				tEventPartitions = GentseFeesten.filterEvents(mEvents, mLatitude, mLongitude, mRadius, date.getHours())
+		function populateEventList() {
+			// Filter the events
+			var date = new Date();
+			tEventPartitions = GentseFeesten.filterEvents(mEvents, date.getHours())
+			
+			// Populate the events (quite brute for now)
+			var t = $('#events li.template')
+			$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
+				if (tPartition.length > 0) {
+					var tPartitionItem = $('#listDivider').clone();
+					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
+					$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()-1) + " uur");
+					$(".counter", tPartitionItem).text(tPartition.length + " events");
+					tPartitionItem.appendTo($('#events'));
 				
-				// Populate the events (quite brute for now)
-				var t = $('#events li.template')
-				$.each(tEventPartitions, function(tPartitionIndex, tPartition) {
-					if (tPartition.length > 0) {
-						var tPartitionItem = $('#listDivider').clone();
-						tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-						$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()-1) + " uur");
-						$(".counter", tPartitionItem).text(tPartition.length + " events");
-						tPartitionItem.appendTo($('#events'));
-					
-						$.each(tPartition, function (tEventIndex, tEvent) {
-							var tEventItem = $('#item').clone();
-							tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
-							$('#title', tEventItem).text(tEvent.title);
-							$('#start', tEventItem).text(tEvent.schedule.start);
-							$('.location .description', tEventItem).text(tEvent.location.description)
-							$('.location .distance', tEventItem).text(readableDistance(1000*tEvent.location.distance) + " van hier")
-							$('a', tEventItem).attr('href', '#event');
-							$('a', tEventItem).click( function() {
-								mCurrentEvent = JSON.stringify(tEvent);
-								populateEvent();
-							});
-							tEventItem.appendTo($('#events'));
+					$.each(tPartition, function (tEventIndex, tEvent) {
+						var tEventItem = $('#item').clone();
+						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
+						$('#title', tEventItem).text(tEvent.title);
+						$('#start', tEventItem).text(tEvent.schedule.start);
+						$('.location .description', tEventItem).text(tEvent.location.description)
+						$('a', tEventItem).attr('href', '#event');
+						$('a', tEventItem).click( function() {
+							mCurrentEvent = JSON.stringify(tEvent);
+							populateEvent();
 						});
-					}
-				});
-				$('#listDivider').remove();
-				$('#item').remove();
-				$('#events').attr("style", "")
-				$('#events li[data-role=list-divider]:first .title').text('Nu bezig')
-			}
+						tEventItem.appendTo($('#events'));
+					});
+				}
+			});
+			$('#listDivider').remove();
+			$('#item').remove();
+			$('#events').attr("style", "")
+			if (date.getHours() != 0)   // FIXME: lookup previous day as well? Reformat data?
+			    $('#events li[data-role=list-divider]:first .title').text('Nu bezig')
 		}
 		
 		function populateEvent() {
-			if(mCurrentEvent){
+			if(mCurrentEvent) {
 				$('#eventDetails').empty();
 				var tCurrentEvent = $.parseJSON(mCurrentEvent);
 				$('<h3>').text(tCurrentEvent.title).appendTo('#eventDetails');
@@ -129,14 +125,14 @@
                     'updateready',
                     function(e) {
                         if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-                          // Browser downloaded a new app cache.
-                          // Swap it in and reload the page to get the new hotness.
-                          window.applicationCache.swapCache();
-                          if (confirm('Der es een nieuwe versie beschikboar. Magk u browser herladen?')) {
-                            window.location.reload();
-                          }
+                            // Browser downloaded a new app cache.
+                            // Swap it in and reload the page to get the new hotness.
+                            window.applicationCache.swapCache();
+                            if (confirm('Der es een nieuwe versie beschikboar. Magk u browser herladen?')) {
+                                window.location.reload();
+                            }
                         } else {
-                          // Manifest didn't changed. Nothing new to server.
+                            // Manifest didn't changed. Nothing new to server.
                         }
                     },
                     false);
@@ -148,64 +144,24 @@
 					mLatitude = iLatitude
 					mLongitude = iLongitude
 					mHasLocation = true
-					
-					$('#location_status').text(" (kem u gevonden)");
-					GentseFeesten.getAddressByLocation(
-						mLatitude,
-						mLongitude,
-						function(iAddress) {
-                         			        $('#location_status_div').trigger("collapse");
-							$('#location_status').text("(" + iAddress + ")");
-						},
-						function(iError) {
-							$('#location_status').text(" (kem u gevonden, ma kweet ni waar)");
-						}
-					);
-		
-					populateList();
 				},
 				function (error) {
-					$('#location_status').text("(kvind u ni, zeg het mij es)");
-               			        $('#location_status_div').trigger("expand");
-			});
+					mHasLocation = false
+				}
+			);
 			
 			// Request a list of events
 			var date = new Date();
 			GentseFeesten.getEvents(
 				date.getDate() - 15,
 				function(iEvents) {
-					mEvents = iEvents
-					mHasEvents = true
-	
-					populateList();
+					mEvents = iEvents	
+					populateEventList();
 				},
 				function(error) {
 					alert("Oeie, tmarcheert precies ni...");
 			});
-
-            // Disable enter through forms
-            $("#formwaarzijtge").keypress(function(e) {
-                if (e.which == 13) {
-                    searchLocation();
-                    return false;
-                }
-            });
 		});
-		
-		function searchLocation() {
-			GentseFeesten.getLocationByAddress(
-				$('#location_address').val(),
-				function(iLatitude, iLongitude, iFormattedAddress) {
-					mHasLocation = true
-					mLatitude = iLatitude
-					mLongitude = iLongitude
-					$('#location_status').text("(" + iFormattedAddress + ")");
-					populateList()
-				}, function(iError) {
-					$('#location_status').text("(ksnap der niks van, probeert nog ne kier)");
-				}
-			);
-		}
 	    </script>
 	</head>
 	<body>
@@ -218,15 +174,6 @@
 			</div>
 
 			<div id="divContent" data-role="content">
-				<div data-role="collapsible" data-collapsed="true" id="location_status_div">
-					<h3 id="locationheader">Mijn plekske <i id="location_status">(aant zoeken...)</i></h3>
-					<div data-role="fieldcontain">
-						<form method="post" id="formwaarzijtge">
-							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
-							<input id="clickme" type="button" value="Vint da ne kier" onclick="javascript:searchLocation()"/>
-						</form>
-					</div>
-				</div>
 				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b" style="visibility: hidden;">
 					<li id="listDivider" class="ui-li ui-li-divider ui-btn ui-bar-b ui-btn-up-undefined" role="heading" data-role="list-divider">
 						<span class="title"></span>
@@ -244,7 +191,6 @@
 								<p>
 									<strong class="location" >
 										<span class="description"> </span>
-										<i> (<span class="distance"> </span>)</i>
 									</strong>
 								</p>
 								</a>

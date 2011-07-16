@@ -2,8 +2,6 @@ var GentseFeesten = new function() {
 	//
 	// API
 	//
-	
-	var geocoder = new google.maps.Geocoder();
 
 	/*
 		day: what day to fetch data for (1 <= day <= 10)
@@ -82,34 +80,6 @@ var GentseFeesten = new function() {
 			}
 		);
 	}
-	
-	this.getLocationByAddress = function(iAddress, cbSuccess, cbError) {
-		geocoder.geocode({ 'address': iAddress }, function (results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				cbSuccess(
-					results[0].geometry.location.lat(),
-					results[0].geometry.location.lng(),
-					results[0].formatted_address
-				)
-			}
-			else {
-				cbError("couldn't fetch location")
-			}
-		});
-	}
-	
-	this.getAddressByLocation = function(iLatitude, iLongitude, cbSuccess, cbError) {
-		geocoder.geocode({ 'latLng': new google.maps.LatLng(iLatitude, iLongitude)}, function (results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				cbSuccess(
-					results[0].formatted_address
-				)
-			}
-			else {
-				cbError("couldn't fetch address")
-			}
-		});
-	}
 
 	/*
 		data: list of events, JSON result of getEvents
@@ -117,13 +87,7 @@ var GentseFeesten = new function() {
 		longitude
 		radius: in kilometers
 	*/
-	this.filterEvents = function(data, latitude, longitude, radius, hour) {
-		// Filter on distance
-		data = $.grep(data, function(event) {
-			event.location.distance = distance(latitude, event.location.latitude, longitude, event.location.longitude)
-			return (event.location.distance <= radius);
-		});
-	
+	this.filterEvents = function(data, hour) {	
 		// Filter on hour
 		var starthour, stophour
 		data = $.grep(data, function(event) {
