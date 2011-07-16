@@ -13,7 +13,6 @@
 		<meta name="author" content="Pieter Colpaert" />
 		<meta name="author" content="Tim Besard" />
 
-
 		<!-- as not every OS supports HTML-less icon detection, provide this in details, and link to imgage dir instead of root -->
 		
 		<!-- 1. iPhone 4/retina --> 
@@ -130,7 +129,7 @@ window.applicationCache.addEventListener('updateready', function(e) {
       // Browser downloaded a new app cache.
       // Swap it in and reload the page to get the new hotness.
       window.applicationCache.swapCache();
-      if (confirm('A new version of this site is available. Load it?')) {
+      if (confirm('Der es een nieuwe versie beschikboar. Magk u browser herladen?')) {
         window.location.reload();
       }
     } else {
@@ -198,10 +197,22 @@ window.applicationCache.addEventListener('updateready', function(e) {
 			);
 		}
 
+	$('#location_address').keyup(function(event) {
+			      if ( event.which == 13 ) {
+			      searchLocation();
+			      }
+
+	});
+
+//disable enter through forms
+    $("#formwaarzijtge").keypress(function(e) {
+    if (e.which == 13) {
+    searchLocation();
+    }
+    });
 // Catch an address specification
-			$('#location_address').keypress(function(iEvent) {
-				searchLocation();
-			});
+
+		
 		</script>
 	</head>
 	<body>
@@ -217,7 +228,7 @@ window.applicationCache.addEventListener('updateready', function(e) {
 				<div data-role="collapsible" data-collapsed="true" id="location_status_div">
 					<h3 id="locationheader">Mijn plekske <i id="location_status">(aant zoeken...)</i></h3>
 					<div data-role="fieldcontain">
-						<form method="post">
+						<form action="javascript: return false" method="post" id="formwaarzijtge">
 							<input type="text" placeholder="Waar zijt ge..." id="location_address" value="" />
 							<input id="clickme" type="button" value="Vint da ne kier" onclick="javascript:searchLocation()"/>
 						</form>

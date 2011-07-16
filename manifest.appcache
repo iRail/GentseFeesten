@@ -1,5 +1,7 @@
 CACHE MANIFEST
 
+#Version 8
+
 CACHE:
 
 gentsefeesten.png
@@ -15,3 +17,8 @@ css/images/icons-36-white.png
 css/images/icons-18-black.png
 css/images/icons-36-black.png
 css/images/icon-search-black.png
+
+
+NETWORK:
+
+*
