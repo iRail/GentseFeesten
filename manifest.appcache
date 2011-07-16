@@ -1,16 +1,16 @@
 CACHE MANIFEST
 
-#Version 8
+#Version 9
 
 CACHE:
 
 gentsefeesten.png
 index.html
 js/gentsefeesten.js
-js/jquery-1.6.2.js
-js/jquery.mobile-1.0b1.js
-js/modernizr-2.0.6.js
-css/jquery.mobile-1.0b1.css
+js/jquery-1.6.2.min.js
+js/modernizr-2.0.6-custom.min.js
+js/jquery.mobile-1.0b1.min.js
+css/jquery.mobile-1.0b1.min.css
 css/images/ajax-loader.png
 css/images/icons-18-white.png
 css/images/icons-36-white.png
