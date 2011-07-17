@@ -108,7 +108,8 @@ var GentseFeesten = new function() {
 			
 			starthour = event.schedule.start.substr(0, 2)
 			stophour = event.schedule.stop.substr(0, 2)
-			return (starthour >= hour || stophour >= hour)
+		    //Window function: start hour between now and in 2 hours
+		    return ((starthour >= hour || stophour >= hour) && starthour < (hour+2))
 		});
 	
 		// Partition into hours

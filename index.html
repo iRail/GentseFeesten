@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <html lang="nl" manifest="manifest.appcache">
 	<head>
 		<meta charset="utf-8" />
@@ -13,6 +16,10 @@
 		<meta name="author" content="Pieter Colpaert" />
 		<meta name="author" content="Tim Besard" />
 
+		<!--[if lt IE 9]>
+		    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		    <![endif]-->
+
 		<!-- as not every OS supports HTML-less icon detection, provide this in details, and link to imgage dir instead of root -->
 		
 		<!-- 1. iPhone 4/retina --> 
@@ -23,15 +30,21 @@
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="/gentsefeesten.png">
 		<!-- everything else, provider higher resolution img -->
 		<link rel="apple-touch-icon-precomposed" href="/gentsefeesten.png">
-
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+	
+		<!-- CSS
+		     ================================================== -->
+		<link rel="stylesheet" href="css/base.css">
+		<link rel="stylesheet" href="css/skeleton.css">
+		<link rel="stylesheet" href="css/layout.css">
+ 
 		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
         
-        <link rel="stylesheet" href="css/jquery.mobile-1.0b1.min.css" />
-		<script type="text/javascript" src="js/modernizr-2.0.6-custom.min.js"></script>
-        <script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
-        <script type="text/javascript" src="js/jquery.mobile-1.0b1.min.js"></script>
-		<script type="text/javascript" src="js/gentsefeesten.js"></script>
-		<script type="text/javascript">
+		<script src="js/modernizr-2.0.6-custom.min.js"></script>
+		<script src="js/jquery-1.6.2.min.js"></script>
+		<script src="js/gentsefeesten.js"></script>
+		<script>
 
 		//
 		// Static data
@@ -74,7 +87,7 @@
 				if (tPartition.length > 0) {
 					var tPartitionItem = $('#listDivider').clone();
 					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
-					$(".title", tPartitionItem).text('Achter ' + (tPartitionIndex+date.getHours()) + " uur");
+					$(".title", tPartitionItem).text((tPartitionIndex+date.getHours()) + " uur");
 					$(".counter", tPartitionItem).text(tPartition.length + " events");
 					tPartitionItem.appendTo($('#events'));
 				
@@ -96,6 +109,42 @@
 			$('#listDivider').remove();
 			$('#item').remove();
 			$('#events').attr("style", "")
+
+
+
+//ook voor hele dag
+if(tFilteredEvents.continuous.length < 0){
+	$('#listDivider2').text("Niets gevonden");
+				       
+}
+	$.each(tFilteredEvents.continuous, function(tPartitionIndex, tPartition) {
+				if (tPartition.length > 0) {
+					var tPartitionItem = $('#listDivider2').clone();
+					tPartitionItem.attr('id', 'divider_' + tPartitionIndex);
+					$(".title2", tPartitionItem).text((tPartitionIndex+date.getHours()) + " uur");
+					$(".counter2", tPartitionItem).text(tPartition.length + " events");
+					tPartitionItem.appendTo($('#events2'));
+				
+					$.each(tPartition, function (tEventIndex, tEvent) {
+						var tEventItem = $('#item2').clone();
+						tEventItem.attr('id', 'event_' + tPartitionIndex + '_' + tEventIndex);
+						$('#title2', tEventItem).text(tEvent.title);
+						$('#start2', tEventItem).text(tEvent.schedule.start);
+						$('.location .description', tEventItem).text(tEvent.location.description)
+						$('a', tEventItem).attr('href', '#event2');
+						$('a', tEventItem).click( function() {
+							mCurrentEvent = JSON.stringify(tEvent);
+							populateEvent();
+						});
+						tEventItem.appendTo($('#events2'));
+					});
+				}
+			});
+			$('#listDivider2').remove();
+			$('#item2').remove();
+			$('#events2').attr("style", "")
+		
+
 		}
 		
 		function populateEvent() {
@@ -163,91 +212,103 @@
 	    </script>
 	</head>
 	<body>
-		<div id="home" data-role="page">
 
-			<div data-role="header">
-				<a href="javascript:window.location.reload()" class="ui-btn-left" data-icon="refresh">Herladen</a>
-				<h1>Gentse Feesten</h1>
-				<a href="#about" class="ui-btn-right" data-icon="info">Informoasje</a>
-			</div>
 
-			<div id="divContent" data-role="content">
-				<ul id="events" data-role="listview" data-inset="true" class="ui-listview  ui-listview-inset ui-corner-all ui-shadow " data-theme="c" data-dividertheme="b" style="visibility: hidden;">
-					<li id="listDivider" class="ui-li ui-li-divider ui-btn ui-bar-b ui-btn-up-undefined" role="heading" data-role="list-divider">
-						<span class="title"></span>
-						<span class="counter ui-li-count ui-btn-up-c ui-btn-corner-all"></span>
-					</li>
-					<li id="item" class="ui-btn-corner-none ui-btn-icon-right ui-li ui-btn-up-c" data-theme="c">
-						<div class="ui-btn-inner ui-li">
-							<div class="ui-btn-text">
-								<a class="ui-link-inherit" href="">
-								<p class="ui-li-aside ui-li-desc">
-									<strong id="start"></strong>
-								</p>
+	  <!-- Standard <ul> with class of "tabs" -->
+	  <ul class="tabs">
+	    <!-- Give href an ID value of corresponding "tabs-content" <li>'s -->
+	    <li><a class="active" href="#tijd">Evenementen</a></li>
+	    <li><a href="#hd">Vandaag hele dag</a></li>
+	    <li><a href="#info">Over deze webapp</a></li>
+	  </ul>
 
-								<h3 id="title"></h3>
-								<p>
-									<strong class="location" >
-										<span class="description"> </span>
-									</strong>
-								</p>
-								</a>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-
-			<div data-role="footer">
-			  <p align="center">
-			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
-			  </p>
-			</div>
+	  <ul class="tabs-content">
+	    <li class="active" id="tijdTab">
+	      <div class="container">
+		<!-- Give column value in word form (one, two..., twelve) -->
+		<div class="sixteen columns">
+		  <h1>Evenementen voor de volgende 2 uur</h1>
+		</div>	   
+		<!-- Sweet nested columns cleared with a clearfix class -->
+		<div class="twelve columns clearfix" id="events">
+		  <div id="listDivider" class="twelve columns alpha">
+		    <h2 class="title"></h2>
+		    <span class="counter"></span>
+		  </div>
+		  <!-- In nested columns give the first column a class of alpha
+		       and the second a class of omega -->
+		  <div class="six columns alpha" id="item">
+		    <strong id="start"></strong>
+		    <h3 id="title"></h3>
+		    <p>
+		      <strong class="location" >
+			<span class="description"> </span>
+		      </strong>
+		    </p>
+		  </div>
 		</div>
-
-		<div id="event" data-role="page">
-
-			<div data-role="header">
-				<a href='#' class='ui-btn-left' data-icon='arrow-l' onclick="history.back(); return false">Back</a><h1>Details</h1>			
-			</div>
-
-			<div id="eventDetails" data-role="content">
-			</div>
-
-			<div data-role="footer">
-			  <p align="center">
-			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
-			  </p>
-			</div>
+	      </div>
+	    </li>
+	    <li id="hdTab">
+	      <div class="container">
+		<!-- Give column value in word form (one, two..., twelve) -->
+		<div class="sixteen columns">
+		  <h1>Dag-informatie</h1>
+		</div>	   
+		<!-- Sweet nested columns cleared with a clearfix class -->
+		<div class="twelve columns clearfix" id="events2">
+		  <div id="listDivider2" class="twelve columns alpha">
+		    <h2 class="title2"></h2>
+		    <span class="counter2"></span>
+		  </div>
+		  <!-- In nested columns give the first column a class of alpha
+		       and the second a class of omega -->
+		  <div class="six columns alpha" id="item2">
+		    <strong id="start2"></strong>
+		    <h3 id="title2"></h3>
+		    <p>
+		      <strong class="location2" >
+			<span class="description2"> </span>
+		      </strong>
+		    </p>
+		  </div>
 		</div>
+	      </div>
 
-		<div id="about" data-role="page">
+	    </li>
+	    <li id="infoTab">
+<blockquote>
+<p>
+	      <ul>
+		<li>Vertoald door <a href="http://www.twitter.com/BartRosseau" target="_blank">Bart Rosseau</a> - Ambtenaar 2.0</li>
+		<li>Uitgewerkt tijdens <a href="http://www.summerofcode.be" target="_blank">iRail Summer of Code</a></li>
+		<li>Open source: <a href="http://github.com/iRail/GentseFeesten/" target="_blank">broncode</a></li>
+		<li>Auteurs:
+		  <ul>
+		    <li>Dimitri Roose - dimitri at iRail.be</li>
+		    <li>Tim Besard - tim at iRail.be</li>
+		    <li>Pieter Colpaert - pieter at iRail.be</li>
+		</ul></li>
+		<li>Met dank aan Stad Gent en iedereen die zijn steentje bijdroeg tot het openen van deze data</li>
+	      </ul>
+</p>
+</blockquote>
+	    </li>
+	  </ul>
+	  <blockquote>
+	    <p id="eventDetails">
 
-			<div data-role="header">
-				<a href='#' class='ui-btn-left' data-icon='arrow-l' onclick="history.back(); return false">Back</a>
-				<h1>Over ons</h1>			
-			</div>
 
-			<div data-role="content">
-			  <ul>
-			    <li>Vertoald door <a href="http://www.twitter.com/BartRosseau" target="_blank">Bart Rosseau</a> - Ambtenaar 2.0</li>
-			    <li>Uitgewerkt tijdens <a href="http://www.summerofcode.be" target="_blank">iRail Summer of Code</a></li>
-			    <li>Open source: <a href="http://github.com/iRail/GentseFeesten/" target="_blank">broncode</a></li>
-			    <li>Auteurs:
-			      <ul>
-				<li>Dimitri Roose - dimitri at iRail.be</li>
-				<li>Tim Besard - tim at iRail.be</li>
-				<li>Pieter Colpaert - pieter at iRail.be</li>
-			    </ul></li>
-			    <li>Met dank aan Stad Gent en iedereen die zijn steentje bijdroeg tot het openen van deze data</li>
-			  </ul>
-			</div>
+	    </p>
+	    <cite>iRail vzw/asbl</cite>
+	  </blockquote>
 
-			<div data-role="footer">
-			  <p align="center">
-			    <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
-			  </p>
-			</div>
-		</div>
+	  <div data-role="footer">
+	    <p align="center">
+	      <small>&copy; 2011 <a href="http://npo.iRail.be" target="_blank">iRail vzw/asbl</a> - Sommige rechten veurbehouden</small>
+	    </p>
+	  </div>
+
+	  <script src="js/app.js"></script>
 	</body>
 </html>
